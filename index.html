@@ -19,9 +19,20 @@
             position: absolute;
             z-index: 99;
         }
+
+        .food{
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            z-index: 99;
+        }
     </style>
+    <h3>Score:<label id="score">0</label></h3>
     <div class="content">
         <div class="player" style="display: none;">
+
+        </div>
+        <div class="food">
 
         </div>
     </div>
@@ -30,16 +41,39 @@
 <script type="text/javascript" src="jquery-ui.min.js"></script>
 <script>
     window.live = true;
-    window.level = 'normal'; //slow normal fast
+    window.level = 'fast'; //slow normal fast
     window.cityOffsetTop = $('.content').offset().top; //场地距离顶部距离
     window.cityMaxBottom = cityOffsetTop + $('.content').height(); //底部距离
     window.cityOffsetLeft = $('.content').offset().left; //场地距离左部距离
     window.cityMaxRight = cityOffsetLeft + $('.content').width(); //右部最大距离
     window.direction = 39; //默认启动方向是右
+    //定义食物相关属性
+    window.foodX = 0;
+    window.foodY = 0;
     $(document).ready(function(){
         startGame();
+        generateFood();
         eventLiterKeyDown();
     });
+
+    //绘制食物
+    function generateFood(){
+        window.foodX = Math.floor( ( Math.random() * (window.cityMaxRight - window.cityOffsetLeft + 1 ) ) + window.cityOffsetLeft );
+        window.foodY = Math.floor( ( Math.random() * (window.cityMaxBottom - window.cityOffsetTop + 1) ) + window.cityOffsetTop )
+
+        $('.food').css({'margin-top':window.foodY, 'margin-left':window.foodX, "background-color":getRandomColor()});
+    }
+
+    function getRandomColor() {
+        var c = '#';
+        var cArray = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+        for(var i = 0; i < 6;i++)
+        {
+            var cIndex = Math.round(Math.random()*15);
+            c += cArray[cIndex];
+        }
+        return c;
+    }
 
     function startGame(){
         $('.player').css('display', 'block');
@@ -97,7 +131,7 @@
         var playerOffsetLeft = $('.player').offset().left;
         if(
             playerOffsetTop < window.cityOffsetTop ||
-            playerOffsetTop > window.cityMaxRight ||
+            playerOffsetTop > window.cityMaxBottom ||
             playerOffsetLeft < window.cityOffsetLeft ||
             playerOffsetLeft > window.cityMaxRight
         ){
@@ -106,6 +140,31 @@
 
         if(!window.live){
             alert('You Lose!');
+            return false;
+        }
+
+        //判断食物状态
+        eatFood(playerOffsetTop, playerOffsetLeft);
+    }
+
+    function eatFood(playerOffsetTop, playerOffsetLeft){
+        if(
+            (
+                window.foodX >= (playerOffsetLeft - 30)
+                &&
+                (window.foodX <= (playerOffsetLeft + 30)
+                )
+            )
+            &&
+            (
+                (window.foodY >= playerOffsetTop - 30)
+                &&
+                (window.foodY <= playerOffsetTop + 30)
+            )
+        ){
+            //获得食物
+            $('#score').text(parseInt($('#score').text() + 1));
+            generateFood();
         }
     }
 
