@@ -27,8 +27,10 @@
 
     function generateWeiBa()
     {
-        var x = getNum(700),y = getNum(1080);
-        var img = '<img style="top: '+ y +'px;left:'+ x +'px;position: absolute;z-index: 99;" src="images/11.jpg" width="100px">';
+        var x = getNum(1080),y = getNum(700);
+        var deg = getNum(360);
+        var image = getNum(2);
+        var img = '<img style="top: '+ y +'px;left:'+ x +'px;position: absolute;z-index: 99;transform: rotate('+ deg +'deg)" src="images/'+ image +'.jpg" width="100px">';
         $(".content").append(img);
         removeSome();
     }
@@ -47,7 +49,7 @@
 
     function removeSome()
     {
-        var maxLength = 10;
+        var maxLength = 20;
         $(".content img").each(function(index, ele){
             if($('.content img').length > maxLength){
                 $(ele).remove();
